@@ -1,5 +1,4 @@
 # FDP Manager - PDF File Manager
-___
 
 ## Table of Contents
 
@@ -10,14 +9,12 @@ ___
   - [Usage](#usage)
 - [License](#license)
 
-___
 
 ## Introduction
 
 FDP Manager is an application for managing PDF files. Comes with the feature of merging and splitting PDF files for 
 free. With a simple design, you can manage PDF files easily.
 
-___
 
 ## Getting Started
 
@@ -90,7 +87,6 @@ Currently, FDP Manager has two features, "Merge PDF" and "Split PDF".
 
 ![Screenshot split view](assets/split-view.png)
 
-___
 
 ## License
 

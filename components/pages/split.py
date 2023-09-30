@@ -18,6 +18,7 @@ pdf_file.reader = pdf_file.writer = None
 
 def _file_picker_result(event: flet.FilePickerResultEvent) -> None:
     split_button.current.disabled = True if event.files is None else False
+    field_input.current.disabled = True if event.files is None else False
     display_pdf_name.current.clean()
 
     if event.files is not None:
@@ -52,6 +53,8 @@ def _split_file(event: flet.FilePickerResultEvent, save_dialog: flet.FilePicker)
 
     # reset the view
     display_pdf_name.current.clean()
+    start_page_input.current.options.clear()
+    end_page_input.current.options.clear()
     start_page_input.current.value = ""
     end_page_input.current.value = ""
     field_input.current.disabled = True if event.files is None else False

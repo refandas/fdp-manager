@@ -15,7 +15,9 @@ pdf.files = dict()
 
 def _file_picker_result(event: flet.FilePickerResultEvent) -> None:
     merge_button.current.disabled = True if event.files is None else False
+    pdf.files.clear()
     files.current.controls.clear()
+
     if event.files is not None:
         for file in event.files:
             files.current.controls.append(

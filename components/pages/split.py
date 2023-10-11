@@ -40,27 +40,28 @@ def _file_picker_result(event: flet.FilePickerResultEvent) -> None:
 
 
 def _split_file(event: flet.FilePickerResultEvent, save_dialog: flet.FilePicker) -> None:
-    pdf_file.writer = pypdf.PdfWriter()
+    if save_dialog.result.path is not None:
+        pdf_file.writer = pypdf.PdfWriter()
 
-    start_page = int(start_page_input.current.value) - 1
-    end_page = int(end_page_input.current.value)
+        start_page = int(start_page_input.current.value) - 1
+        end_page = int(end_page_input.current.value)
 
-    for page in range(start_page, end_page):
-        pdf_file.writer.add_page(pdf_file.reader.pages[page])
+        for page in range(start_page, end_page):
+            pdf_file.writer.add_page(pdf_file.reader.pages[page])
 
-    with open(save_dialog.result.path, "wb") as file:
-        pdf_file.writer.write(file)
+        with open(save_dialog.result.path, "wb") as file:
+            pdf_file.writer.write(file)
 
-    # reset the view
-    display_pdf_name.current.clean()
-    start_page_input.current.options.clear()
-    end_page_input.current.options.clear()
-    start_page_input.current.value = ""
-    end_page_input.current.value = ""
-    field_input.current.disabled = True if event.files is None else False
-    split_button.current.disabled = True if event.files is None else False
+        # reset the view
+        display_pdf_name.current.clean()
+        start_page_input.current.options.clear()
+        end_page_input.current.options.clear()
+        start_page_input.current.value = ""
+        end_page_input.current.value = ""
+        field_input.current.disabled = True if event.files is None else False
+        split_button.current.disabled = True if event.files is None else False
 
-    event.page.update()
+        event.page.update()
 
 
 def _split_components(file_picker: flet.FilePicker, save_dialog: flet.FilePicker) -> flet.Container:

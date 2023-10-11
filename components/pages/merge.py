@@ -78,16 +78,17 @@ def _shift_pdf_order(event: flet.DragTargetAcceptEvent) -> None:
 
 
 def _merge_file(event: flet.FilePickerResultEvent, save_dialog: flet.FilePicker) -> None:
-    merger = pypdf.PdfWriter()
-    for file in pdf.ordered_files:
-        merger.append(pdf.files[file])
+    if save_dialog.result.path is not None:
+        merger = pypdf.PdfWriter()
+        for file in pdf.ordered_files:
+            merger.append(pdf.files[file])
 
-    merger.write(save_dialog.result.path)
-    merger.close()
+        merger.write(save_dialog.result.path)
+        merger.close()
 
-    files.current.controls.clear()
-    merge_button.current.disabled = True if event.files is None else False
-    event.page.update()
+        files.current.controls.clear()
+        merge_button.current.disabled = True if event.files is None else False
+        event.page.update()
 
 
 def _merge_components(file_picker: flet.FilePicker, save_dialog: flet.FilePicker) -> flet.Container:

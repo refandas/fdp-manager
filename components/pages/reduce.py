@@ -33,52 +33,53 @@ def _file_picker_result(event: flet.FilePickerResultEvent) -> None:
 
 
 def _reduce_file(event: flet.FilePickerResultEvent, save_dialog: flet.FilePicker) -> None:
-    pdf_file.reader = pypdf.PdfReader(pdf_file.path)
-    pdf_file.writer = pypdf.PdfWriter()
+    if save_dialog.result.path is not None:
+        pdf_file.reader = pypdf.PdfReader(pdf_file.path)
+        pdf_file.writer = pypdf.PdfWriter()
 
-    progress_modal = flet.AlertDialog(
-        modal=True,
-        title=flet.Text("Reducing file size"),
-        content=flet.Row(
-            spacing=20,
+        progress_modal = flet.AlertDialog(
+            modal=True,
+            title=flet.Text("Reducing file size"),
+            content=flet.Row(
+                spacing=20,
+                controls=[
+                    flet.ProgressRing(),
+                    flet.Text("Reducing file size is in progress")
+                ]
+            )
+        )
+
+        event.page.dialog = progress_modal
+        progress_modal.open = True
+        event.page.update()
+
+        for page in pdf_file.reader.pages:
+            pdf_file.writer.add_page(page)
+
+        for page in pdf_file.writer.pages:
+            for img in page.images:
+                img.replace(img.image, quality=int(image_quality.current.value))
+
+        with open(save_dialog.result.path, "wb") as file:
+            pdf_file.writer.write(file)
+
+        progress_modal.content = flet.Row(
+            spacing=10,
             controls=[
-                flet.ProgressRing(),
-                flet.Text("Reducing file size is in progress")
+                flet.Icon(flet.icons.DONE_OUTLINE_ROUNDED),
+                flet.Text("Finished")
             ]
         )
-    )
+        event.page.update()
 
-    event.page.dialog = progress_modal
-    progress_modal.open = True
-    event.page.update()
+        time.sleep(2)
+        progress_modal.open = False
 
-    for page in pdf_file.reader.pages:
-        pdf_file.writer.add_page(page)
-
-    for page in pdf_file.writer.pages:
-        for img in page.images:
-            img.replace(img.image, quality=int(image_quality.current.value))
-
-    with open(save_dialog.result.path, "wb") as file:
-        pdf_file.writer.write(file)
-
-    progress_modal.content = flet.Row(
-        spacing=10,
-        controls=[
-            flet.Icon(flet.icons.DONE_OUTLINE_ROUNDED),
-            flet.Text("Finished")
-        ]
-    )
-    event.page.update()
-
-    time.sleep(2)
-    progress_modal.open = False
-
-    # reset the view
-    display_pdf_name.current.clean()
-    image_quality.current.disabled = True if event.files is None else False
-    reduce_button.current.disabled = True if event.files is None else False
-    event.page.update()
+        # reset the view
+        display_pdf_name.current.clean()
+        image_quality.current.disabled = True if event.files is None else False
+        reduce_button.current.disabled = True if event.files is None else False
+        event.page.update()
 
 
 def _reduce_components(file_picker: flet.FilePicker, save_dialog: flet.FilePicker) -> flet.Container:

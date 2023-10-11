@@ -1,9 +1,9 @@
+import datetime
 import flet
-import components.controls.navigation
 import pypdf
 import time
+import components.controls.navigation
 from utils.pdf import PDFFile
-from components.pages.constants import DEFAULT_REDUCE_FILE_NAME
 
 # Type control reference
 select_file_button = flet.Ref[flet.ElevatedButton]()
@@ -116,7 +116,7 @@ def _reduce_components(file_picker: flet.FilePicker, save_dialog: flet.FilePicke
                     ref=reduce_button,
                     icon=flet.icons.FILE_DOWNLOAD_OUTLINED,
                     on_click=lambda _: save_dialog.save_file(
-                        file_name=DEFAULT_REDUCE_FILE_NAME
+                        file_name=f"Reduced-{datetime.datetime.today().strftime('%d-%b-%Y-%H-%M-%S')}.pdf"
                     ),
                     disabled=True,
                 ),

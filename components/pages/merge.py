@@ -1,7 +1,7 @@
+import datetime
 import flet
 import pypdf
 import components.controls.navigation
-from components.pages.constants import DEFAULT_MERGED_FILE_NAME
 from utils.pdf import PDFFile
 
 # Type control reference
@@ -110,7 +110,7 @@ def _merge_components(file_picker: flet.FilePicker, save_dialog: flet.FilePicker
                     ref=merge_button,
                     icon=flet.icons.FILE_DOWNLOAD_OUTLINED,
                     on_click=lambda _: save_dialog.save_file(
-                        file_name=DEFAULT_MERGED_FILE_NAME
+                        file_name=f"Merged-{datetime.datetime.today().strftime('%d-%b-%Y-%H-%M-%S')}.pdf"
                     ),
                     disabled=True,
                 ),

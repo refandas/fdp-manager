@@ -1,7 +1,7 @@
+import datetime
 import flet
 import pypdf
 import components.controls.navigation
-from components.pages.constants import DEFAULT_SPLIT_FILE_NAME
 from utils.pdf import PDFFile
 
 # Type control reference
@@ -100,7 +100,7 @@ def _split_components(file_picker: flet.FilePicker, save_dialog: flet.FilePicker
                     ref=split_button,
                     icon=flet.icons.FILE_DOWNLOAD_OUTLINED,
                     on_click=lambda _: save_dialog.save_file(
-                        file_name=DEFAULT_SPLIT_FILE_NAME
+                        file_name=f"Split-{datetime.datetime.today().strftime('%d-%b-%Y-%H-%M-%S')}.pdf"
                     ),
                     disabled=True,
                 ),

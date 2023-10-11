@@ -2,6 +2,7 @@ import flet
 import components.pages.home
 import components.pages.merge
 import components.pages.split
+import components.pages.reduce
 
 
 def home_view(page: flet.Page) -> flet.View:
@@ -34,6 +35,16 @@ def split_view(page: flet.Page) -> flet.View:
     return view
 
 
+def reduce_view(page: flet.Page) -> flet.View:
+    view = flet.View(
+        route="/reduce",
+        controls=[
+            components.pages.reduce.render(page),
+        ],
+    )
+    return view
+
+
 def change(route: flet.RouteChangeEvent, page: flet.Page) -> None:
     # set the home view
     page.views.clear()
@@ -44,6 +55,8 @@ def change(route: flet.RouteChangeEvent, page: flet.Page) -> None:
         page.views.append(merge_view(page))
     elif page.route == "/split":
         page.views.append(split_view(page))
+    elif page.route == "/reduce":
+        page.views.append(reduce_view(page))
 
 
 def view_pop(view: flet.ViewPopEvent, page: flet.Page) -> None:

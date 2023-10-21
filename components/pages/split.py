@@ -1,6 +1,7 @@
 import datetime
 import flet
 import pypdf
+from components.pages import template
 import components.controls.navigation
 from utils.pdf import PDFFile
 
@@ -43,6 +44,13 @@ def _split_file(event: flet.FilePickerResultEvent, save_dialog: flet.FilePicker)
     if save_dialog.result.path is not None:
         pdf_file.writer = pypdf.PdfWriter()
 
+        # Modal will automatically open when process is start
+        progress_modal = template.setup_modal(
+            title="Split file",
+            description="Split file is in progress",
+            page=event.page,
+        )
+
         start_page = int(start_page_input.current.value) - 1
         end_page = int(end_page_input.current.value)
 
@@ -51,6 +59,13 @@ def _split_file(event: flet.FilePickerResultEvent, save_dialog: flet.FilePicker)
 
         with open(save_dialog.result.path, "wb") as file:
             pdf_file.writer.write(file)
+
+        # Change modal description after process is finished
+        template.close_modal(
+            modal=progress_modal,
+            message="Finished",
+            page=event.page,
+        )
 
         # reset the view
         display_pdf_name.current.clean()

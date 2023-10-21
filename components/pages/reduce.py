@@ -1,8 +1,8 @@
 import datetime
 import flet
 import pypdf
-import time
 import components.controls.navigation
+from components.pages import template
 from utils.pdf import PDFFile
 
 # Type control reference
@@ -37,21 +37,11 @@ def _reduce_file(event: flet.FilePickerResultEvent, save_dialog: flet.FilePicker
         pdf_file.reader = pypdf.PdfReader(pdf_file.path)
         pdf_file.writer = pypdf.PdfWriter()
 
-        progress_modal = flet.AlertDialog(
-            modal=True,
-            title=flet.Text("Reducing file size"),
-            content=flet.Row(
-                spacing=20,
-                controls=[
-                    flet.ProgressRing(),
-                    flet.Text("Reducing file size is in progress")
-                ]
-            )
+        progress_modal = template.setup_modal(
+            title="Reducing file size",
+            description="Reducing file size is in progress",
+            page=event.page,
         )
-
-        event.page.dialog = progress_modal
-        progress_modal.open = True
-        event.page.update()
 
         for page in pdf_file.reader.pages:
             pdf_file.writer.add_page(page)
@@ -63,17 +53,12 @@ def _reduce_file(event: flet.FilePickerResultEvent, save_dialog: flet.FilePicker
         with open(save_dialog.result.path, "wb") as file:
             pdf_file.writer.write(file)
 
-        progress_modal.content = flet.Row(
-            spacing=10,
-            controls=[
-                flet.Icon(flet.icons.DONE_OUTLINE_ROUNDED),
-                flet.Text("Finished")
-            ]
+        # Change modal description after process is finished
+        template.close_modal(
+            modal=progress_modal,
+            message="Finished",
+            page=event.page,
         )
-        event.page.update()
-
-        time.sleep(2)
-        progress_modal.open = False
 
         # reset the view
         display_pdf_name.current.clean()

@@ -2,6 +2,7 @@ import datetime
 import flet
 import pypdf
 import components.controls.navigation
+from components.pages import template
 from utils.pdf import PDFFile
 
 # Type control reference
@@ -80,11 +81,25 @@ def _shift_pdf_order(event: flet.DragTargetAcceptEvent) -> None:
 def _merge_file(event: flet.FilePickerResultEvent, save_dialog: flet.FilePicker) -> None:
     if save_dialog.result.path is not None:
         merger = pypdf.PdfWriter()
+
+        progress_modal = template.setup_modal(
+            title="Merging file",
+            description="Merging file is in progress",
+            page=event.page,
+        )
+
         for file in pdf.ordered_files:
             merger.append(pdf.files[file])
 
         merger.write(save_dialog.result.path)
         merger.close()
+
+        # Change modal description after process is finished
+        template.close_modal(
+            modal=progress_modal,
+            message="Finished",
+            page=event.page,
+        )
 
         files.current.controls.clear()
         merge_button.current.disabled = True if event.files is None else False

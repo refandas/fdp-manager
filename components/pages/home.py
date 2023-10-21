@@ -1,52 +1,38 @@
 import flet
+from components.pages.template import menu_component
 
 
 def merge(page: flet.Page) -> flet.Container:
-    merge_component_menu = flet.Container(
-        bgcolor=flet.colors.BLACK38,
-        border_radius=10,
-        width=250,
-        height=120,
-        margin=flet.margin.all(10),
-        padding=flet.padding.all(25),
-        on_click=lambda _: page.go("/merge"),
-        content=flet.Column(
-            controls=[
-                flet.Row(
-                    controls=[
-                        flet.Icon(name=flet.icons.CALL_MERGE_ROUNDED),
-                        flet.Text("Merge PDF", size=16, weight=flet.FontWeight.W_700),
-                    ]
-                ),
-                flet.Text("Combine multiple PDF files into a single PDF file"),
-            ]
-        ),
+    merge_component = menu_component(
+        page=page,
+        route="/merge",
+        name="Merge PDF",
+        icon=flet.icons.CALL_MERGE_ROUNDED,
+        description="Combine multiple PDF files into a single PDF file"
     )
-    return merge_component_menu
+    return merge_component
 
 
 def split(page: flet.Page) -> flet.Container:
-    split_component_menu = flet.Container(
-        bgcolor=flet.colors.BLACK38,
-        border_radius=10,
-        width=250,
-        height=120,
-        margin=flet.margin.all(10),
-        padding=flet.padding.all(25),
-        on_click=lambda _: page.go("/split"),
-        content=flet.Column(
-            controls=[
-                flet.Row(
-                    controls=[
-                        flet.Icon(name=flet.icons.CALL_SPLIT_ROUNDED),
-                        flet.Text("Split a PDF", size=16, weight=flet.FontWeight.W_700),
-                    ]
-                ),
-                flet.Text("Separate a single PDF file"),
-            ],
-        ),
+    split_component = menu_component(
+        page=page,
+        route="/split",
+        name="Split a PDF",
+        icon=flet.icons.CALL_SPLIT_ROUNDED,
+        description="Separate a single PDF file"
     )
-    return split_component_menu
+    return split_component
+
+
+def reduce(page: flet.Page) -> flet.Container:
+    reduce_component = menu_component(
+        page=page,
+        route="/reduce",
+        name="Reduce a PDF",
+        icon=flet.icons.PHOTO_SIZE_SELECT_SMALL_ROUNDED,
+        description="Reduce the size of PDF"
+    )
+    return reduce_component
 
 
 def render(page: flet.Page):
@@ -60,6 +46,7 @@ def render(page: flet.Page):
             controls=[
                 merge(page),
                 split(page),
+                reduce(page),
             ],
         ),
     )

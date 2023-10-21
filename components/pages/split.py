@@ -1,7 +1,8 @@
+import datetime
 import flet
 import pypdf
+from components.pages import template
 import components.controls.navigation
-from components.pages.constants import DEFAULT_SPLIT_FILE_NAME
 from utils.pdf import PDFFile
 
 # Type control reference
@@ -40,27 +41,42 @@ def _file_picker_result(event: flet.FilePickerResultEvent) -> None:
 
 
 def _split_file(event: flet.FilePickerResultEvent, save_dialog: flet.FilePicker) -> None:
-    pdf_file.writer = pypdf.PdfWriter()
+    if save_dialog.result.path is not None:
+        pdf_file.writer = pypdf.PdfWriter()
 
-    start_page = int(start_page_input.current.value) - 1
-    end_page = int(end_page_input.current.value)
+        # Modal will automatically open when process is start
+        progress_modal = template.setup_modal(
+            title="Split file",
+            description="Split file is in progress",
+            page=event.page,
+        )
 
-    for page in range(start_page, end_page):
-        pdf_file.writer.add_page(pdf_file.reader.pages[page])
+        start_page = int(start_page_input.current.value) - 1
+        end_page = int(end_page_input.current.value)
 
-    with open(save_dialog.result.path, "wb") as file:
-        pdf_file.writer.write(file)
+        for page in range(start_page, end_page):
+            pdf_file.writer.add_page(pdf_file.reader.pages[page])
 
-    # reset the view
-    display_pdf_name.current.clean()
-    start_page_input.current.options.clear()
-    end_page_input.current.options.clear()
-    start_page_input.current.value = ""
-    end_page_input.current.value = ""
-    field_input.current.disabled = True if event.files is None else False
-    split_button.current.disabled = True if event.files is None else False
+        with open(save_dialog.result.path, "wb") as file:
+            pdf_file.writer.write(file)
 
-    event.page.update()
+        # Change modal description after process is finished
+        template.close_modal(
+            modal=progress_modal,
+            message="Finished",
+            page=event.page,
+        )
+
+        # reset the view
+        display_pdf_name.current.clean()
+        start_page_input.current.options.clear()
+        end_page_input.current.options.clear()
+        start_page_input.current.value = ""
+        end_page_input.current.value = ""
+        field_input.current.disabled = True if event.files is None else False
+        split_button.current.disabled = True if event.files is None else False
+
+        event.page.update()
 
 
 def _split_components(file_picker: flet.FilePicker, save_dialog: flet.FilePicker) -> flet.Container:
@@ -99,7 +115,7 @@ def _split_components(file_picker: flet.FilePicker, save_dialog: flet.FilePicker
                     ref=split_button,
                     icon=flet.icons.FILE_DOWNLOAD_OUTLINED,
                     on_click=lambda _: save_dialog.save_file(
-                        file_name=DEFAULT_SPLIT_FILE_NAME
+                        file_name=f"Split-{datetime.datetime.today().strftime('%d-%b-%Y-%H-%M-%S')}.pdf"
                     ),
                     disabled=True,
                 ),

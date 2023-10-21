@@ -6,6 +6,7 @@ class IndexMenu(Enum):
     HOME = 0
     MERGE = 1
     SPLIT = 2
+    REDUCE = 3
 
 
 class Menu(flet.UserControl):
@@ -20,6 +21,8 @@ class Menu(flet.UserControl):
             self.page.go("/merge")
         elif event.control.selected_index == IndexMenu.SPLIT.value:
             self.page.go("/split")
+        elif event.control.selected_index == IndexMenu.REDUCE.value:
+            self.page.go("/reduce")
 
     def did_mount(self) -> None:
         self.navigation_menu.on_change = lambda event: self.navigation_action(event)
@@ -38,5 +41,9 @@ class Menu(flet.UserControl):
                 icon=flet.icons.CALL_SPLIT_ROUNDED,
                 label="Split PDF"
             ),
+            flet.NavigationRailDestination(
+                icon=flet.icons.PHOTO_SIZE_SELECT_SMALL_ROUNDED,
+                label="Reduce PDF"
+            )
         ]
         return self.navigation_menu

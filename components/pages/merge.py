@@ -47,6 +47,9 @@ def _file_picker_result(event: flet.FilePickerResultEvent) -> None:
             )
             files.current.controls.append(file_component)
             pdf.files[file.name] = file.path
+
+        # Set the default ordered file list based on the input file name
+        pdf.ordered_files = list(pdf.files.keys())
     event.page.update()
 
 
